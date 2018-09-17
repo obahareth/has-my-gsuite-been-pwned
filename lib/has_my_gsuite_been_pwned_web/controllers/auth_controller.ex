@@ -22,7 +22,13 @@ defmodule HasMyGsuiteBeenPwnedWeb.AuthController do
       avatar: String.replace_suffix(user["picture"], "?sz=50", "?sz=400")
     }
 
-    # TODO: Request G Suite directory
+    # TODO: Move this to somewhere that makes more sense (probably backgroudn task?)
+
+    directory_endpoint = "https://www.googleapis.com/admin/directory/v1/users?customer=my_customer"
+    %{body: directory} = OAuth2.Client.get!(client, directory_endpoint)
+
+    IO.inspect user
+    IO.inspect directory
 
     # Store the user in the session under `:current_user` and redirect to /.
     # In most cases, we'd probably just store the user's ID that can be used
