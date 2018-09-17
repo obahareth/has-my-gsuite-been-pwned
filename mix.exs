@@ -40,7 +40,8 @@ defmodule HasMyGsuiteBeenPwned.Mixfile do
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"}
+      {:cowboy, "~> 1.0"},
+      {:oauth2, "~> 0.9"}
     ]
   end
 
