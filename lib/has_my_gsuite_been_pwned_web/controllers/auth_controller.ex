@@ -1,6 +1,8 @@
 defmodule HasMyGsuiteBeenPwnedWeb.AuthController do
   use HasMyGsuiteBeenPwnedWeb, :controller
 
+  @auth_scope "https://www.googleapis.com/auth/admin.directory.user.readonly https://www.googleapis.com/auth/userinfo.email"
+
   @doc """
   This action is reached via `/auth/callback` is the the callback URL that
   Google's OAuth2 provider will redirect the user back to with a `code` that will
@@ -12,12 +14,15 @@ defmodule HasMyGsuiteBeenPwnedWeb.AuthController do
     client = Google.get_token!(code: code)
 
     # Request the user's data with the access token
-    scope = "https://www.googleapis.com/admin/directory/v1/users?customer=my_customer"
-    %{body: user} = OAuth2.Client.get!(client, scope)
+    user_endpoint = "https://www.googleapis.com/plus/v1/people/me/openIdConnect"
+    %{body: user} = OAuth2.Client.get!(client, user_endpoint)
     current_user = %{
       name: user["name"],
+      email: user["email"],
       avatar: String.replace_suffix(user["picture"], "?sz=50", "?sz=400")
     }
+
+    # TODO: Request G Suite directory
 
     # Store the user in the session under `:current_user` and redirect to /.
     # In most cases, we'd probably just store the user's ID that can be used
@@ -37,7 +42,7 @@ defmodule HasMyGsuiteBeenPwnedWeb.AuthController do
   """
   def index(conn, _params) do
     redirect conn, external: Google.authorize_url!(
-      scope: "https://www.googleapis.com/auth/userinfo.email"
+      scope: @auth_scope
     )
   end
 
