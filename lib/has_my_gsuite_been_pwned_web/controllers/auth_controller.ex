@@ -1,5 +1,5 @@
-defmodule GoogleOAuth2Example.AuthController do
-  use GoogleOAuth2Example.Web, :controller
+defmodule HasMyGsuiteBeenPwnedWeb.AuthController do
+  use HasMyGsuiteBeenPwnedWeb, :controller
 
   @doc """
   This action is reached via `/auth/callback` is the the callback URL that
