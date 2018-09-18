@@ -1,4 +1,7 @@
 defmodule HasMyGsuiteBeenPwnedWeb.AuthController do
+  alias HasMyGsuiteBeenPwned.Google.Directory, as: DirectoryService
+  alias HasMyGsuiteBeenPwned.HaveIBeenPwned, as: PwnedService
+
   use HasMyGsuiteBeenPwnedWeb, :controller
 
   @auth_scope "https://www.googleapis.com/auth/admin.directory.user.readonly https://www.googleapis.com/auth/userinfo.email"
@@ -24,11 +27,14 @@ defmodule HasMyGsuiteBeenPwnedWeb.AuthController do
 
     # TODO: Move this to somewhere that makes more sense (probably backgroudn task?)
 
-    directory_endpoint = "https://www.googleapis.com/admin/directory/v1/users?customer=my_customer"
-    %{body: directory} = OAuth2.Client.get!(client, directory_endpoint)
-
-    IO.inspect user
-    IO.inspect directory
+    # directory_endpoint = "https://www.googleapis.com/admin/directory/v1/users?customer=my_customer"
+    # %{body: directory} = OAuth2.Client.get!(client, directory_endpoint)
+    DirectoryService.fetch_entire_directory(client)
+    |> Enum.map(fn u ->
+        Task.async(fn -> PwnedService.check_user(u) end)
+      end)
+    |> Enum.map(fn t -> Task.await(t) end)
+    |> IO.inspect
 
     # Store the user in the session under `:current_user` and redirect to /.
     # In most cases, we'd probably just store the user's ID that can be used
