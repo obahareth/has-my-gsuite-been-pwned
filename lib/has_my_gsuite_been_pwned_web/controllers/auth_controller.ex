@@ -26,15 +26,16 @@ defmodule HasMyGsuiteBeenPwnedWeb.AuthController do
     }
 
     # TODO: Move this to somewhere that makes more sense (probably backgroudn task?)
+    HasMyGsuiteBeenPwned.ReportGenerator.generate(client, "test@example.com")
 
     # directory_endpoint = "https://www.googleapis.com/admin/directory/v1/users?customer=my_customer"
     # %{body: directory} = OAuth2.Client.get!(client, directory_endpoint)
-    DirectoryService.fetch_entire_directory(client)
-    |> Enum.map(fn u ->
-        Task.async(fn -> PwnedService.check_user(u) end)
-      end)
-    |> Enum.map(fn t -> Task.await(t) end)
-    |> IO.inspect
+    # DirectoryService.fetch_entire_directory(client)
+    # |> Enum.map(fn u ->
+    #     Task.async(fn -> PwnedService.check_user(u) end)
+    #   end)
+    # |> Enum.map(fn t -> Task.await(t) end)
+    # |> IO.inspect
 
     # Store the user in the session under `:current_user` and redirect to /.
     # In most cases, we'd probably just store the user's ID that can be used
