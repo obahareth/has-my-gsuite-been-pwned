@@ -42,7 +42,8 @@ defmodule HasMyGsuiteBeenPwned.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:oauth2, "~> 0.9"},
-      {:ex_pwned, "~> 0.1.0"},
+      #{:ex_pwned, "~> 0.1.3"},
+      {:ex_pwned, github: "techgaun/ex_pwned"},
       {:csv, "~> 2.0.0"},
       {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false}
     ]

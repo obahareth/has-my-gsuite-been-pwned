@@ -16,7 +16,7 @@ defmodule HasMyGsuiteBeenPwned.ReportGenerator do
   defp get_breach_reports(oauth_client) do
     oauth_client
     |> DirectoryService.fetch_entire_directory
-    |> Enum.map(&PwnedService.check_user_and_sleep/1)
+    |> Enum.map(&PwnedService.check_user/1)
     |> Enum.reject(&is_nil/1)
   end
 
