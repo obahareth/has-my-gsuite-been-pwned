@@ -1,4 +1,8 @@
 defmodule HasMyGsuiteBeenPwned.Google.Directory do
+  @moduledoc """
+  Directory allows us to fetch all users from a gsuite
+  """
+
   alias HasMyGsuiteBeenPwned.User
 
   @directory_endpoint "https://www.googleapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500"

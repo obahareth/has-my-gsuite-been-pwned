@@ -1,4 +1,8 @@
 defmodule HasMyGsuiteBeenPwned.HaveIBeenPwned do
+  @moduledoc """
+  Wrapper for the ex_pwned allowing us to retry requests if they timeout
+  """
+
   alias HasMyGsuiteBeenPwned.User
 
   def check_user(user = %User{}) do
@@ -9,7 +13,7 @@ defmodule HasMyGsuiteBeenPwned.HaveIBeenPwned do
   def check_user_and_sleep(user = %User{}) do
     case check_user(user) do
       {:ok, breach_report, retry_after} ->
-        if (retry_after) do
+        if retry_after do
           # Sleep for retry_time + 150ms (to avoid getting hit by rate limit)
           sleep_time = (retry_after[:retry_after] * 1000) + 150
           :timer.sleep(sleep_time)
