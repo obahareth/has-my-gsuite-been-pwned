@@ -7,6 +7,8 @@ defmodule HasMyGsuiteBeenPwned.HaveIBeenPwned do
 
   def check_user(user = %User{}) do
     case ExPwned.Breaches.breachedaccount(user.email) do
+      {:ok, %{msg: "no breach was found for given input"}, _} ->
+        nil
       {:ok, breach_report, _ } ->
         breach_report
         |> Enum.each(&(get_simplified_breach_report(&1, user)))
