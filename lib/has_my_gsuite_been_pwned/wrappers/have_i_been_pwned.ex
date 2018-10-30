@@ -9,10 +9,13 @@ defmodule HasMyGsuiteBeenPwned.HaveIBeenPwned do
     case ExPwned.Breaches.breachedaccount(user.email) do
       {:ok, %{msg: "no breach was found for given input"}, _} ->
         nil
-      {:ok, breach_report, _ } ->
+      # request succeeded, but a retry after may have been sent
+      {:ok, breach_report, retry_after } ->
+        :timer.sleep(retry_after * 1000)
         breach_report
         |> Enum.each(&(get_simplified_breach_report(&1, user)))
-      {:error, :rate, _msg, retry_after} ->
+      # request failed because of a rate limit
+      {:error, :rate, _msg, retry_after} ->   
         :timer.sleep(retry_after * 1000)
          check_user(user)
     end
