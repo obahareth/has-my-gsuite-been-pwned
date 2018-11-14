@@ -1,22 +1,25 @@
 defmodule HasMyGsuiteBeenPwned.HaveIBeenPwned do
+  @moduledoc """
+  Wrapper for the ex_pwned allowing us to retry requests if they timeout
+  """
+
   alias HasMyGsuiteBeenPwned.User
 
   def check_user(user = %User{}) do
-    user.email
-    |> ExPwned.Breaches.breachedaccount
-  end
-
-  def check_user_and_sleep(user = %User{}) do
-    case check_user(user) do
-      {:ok, breach_report, retry_after} ->
-        if (retry_after) do
-          # Sleep for retry_time + 150ms (to avoid getting hit by rate limit)
-          sleep_time = (retry_after[:retry_after] * 1000) + 150
-          :timer.sleep(sleep_time)
-        end
-
-        get_simplified_breach_report(breach_report, user)
-      _ -> nil
+    case ExPwned.Breaches.breachedaccount(user.email) do
+      {:ok, %{msg: "no breach was found for given input"}, _} ->
+        nil
+      # request succeeded, but a retry after may have been sent
+      {:ok, breach_report, retry_after_kw } ->
+        retry_after = Keyword.fetch!(retry_after_kw, :retry_after)
+        :timer.sleep(retry_after * 1000)
+        breach_report
+        |> Enum.each(&(get_simplified_breach_report(&1, user)))
+      # request failed because of a rate limit
+      {:error, :rate, _msg, retry_after_kw} ->
+        retry_after = Keyword.fetch!(retry_after_kw, :retry_after)
+        :timer.sleep(retry_after * 1000)
+         check_user(user)
     end
   end
 

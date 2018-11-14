@@ -1,4 +1,7 @@
 defmodule HasMyGsuiteBeenPwned.Application do
+  @moduledoc """
+  Supervisor config
+  """
   use Application
 
   # See https://hexdocs.pm/elixir/Application.html

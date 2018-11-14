@@ -1,4 +1,8 @@
 defmodule Google do
+  @moduledoc """
+  Google OAuth to allow us to authorize against google
+  """
+
   use OAuth2.Strategy
 
   # Public API
