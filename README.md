@@ -1,6 +1,7 @@
 # HasMyGsuiteBeenPwned
 
-**This project's development is on hold until a solution to [issue #1](https://github.com/obahareth/has-my-gsuite-been-pwned/issues/1) is found.**
+**No longer maintained**   
+**I recommend using Have I Been Pwned's [Domain Search feature](https://haveibeenpwned.com/DomainSearch) instead.**
 
 This project allows G Suite admins to quickly check their entire G Suite directory (emails) against https://haveibeenpwned.com.
 It uses OAuth 2 (Sign in with Google) and allows you to see which of your users have possibly had their accounts breached.
